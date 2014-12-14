@@ -29,6 +29,7 @@ import android.os.Looper;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.MediaRouteActionProvider;
 import android.support.v7.media.MediaRouteSelector;
+import android.support.v7.media.MediaControlIntent;
 import android.support.v7.media.MediaRouter;
 import android.support.v7.media.MediaRouter.RouteInfo;
 import android.util.Log;
@@ -71,9 +72,13 @@ public class FlintVideoManager {
         Log.d(TAG, "Application ID is: " + mApplicationId);
         mMediaRouter = MediaRouter.getInstance(context);
         mMediaRouteSelector = new MediaRouteSelector.Builder()
-                .addControlCategory(
+            // add Flint-based devices
+            .addControlCategory(
                         FlintMediaControlIntent
-                                .categoryForFlint(mApplicationId)).build();
+                                .categoryForFlint(mApplicationId))
+            // add generic devices with remote playback capability, s.t., Chromecast.
+            .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+            .build();
 
         mMediaRouterCallback = new FlintMediaRouterCallback();
         addRouterCallback();
